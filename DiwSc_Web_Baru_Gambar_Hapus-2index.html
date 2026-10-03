@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b12">
+<title>DiwSc — Script Hub</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#090b12;--card:#111722;--card2:#171e2c;--line:#273144;--text:#f5f7fb;--muted:#98a4b8;--purple:#7c5cff;--green:#22d39b}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{border:0;cursor:pointer;color:#fff;font-weight:800}
+.top{position:sticky;top:0;z-index:10;background:#090b12ee;border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
+.nav{max-width:1050px;margin:auto;padding:13px 16px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:22px;font-weight:950}.logo b{color:var(--purple)}
+.btn{background:var(--purple);padding:12px 16px;border-radius:12px}.btn.dark{background:#20283a;border:1px solid var(--line)}
+.wrap{max-width:1050px;margin:auto;padding:25px 16px 70px}
+.hero{padding:18px 0 16px}.pill{display:inline-block;border:1px solid #40377a;background:#191632;color:#c7bdff;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:850}
+h1{font-size:clamp(32px,7vw,52px);line-height:1.02;margin:15px 0 10px}h1 span{color:#8d7aff}
+.hero p{color:var(--muted);line-height:1.55;max-width:700px}
+.search{position:relative;margin:20px 0 13px}.search input{width:100%;height:54px;border:1px solid var(--line);border-radius:15px;background:#0e131d;color:#fff;padding:0 54px 0 16px;outline:0}.search button{position:absolute;right:7px;top:7px;width:40px;height:40px;border-radius:11px;background:var(--purple)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px}.tab{white-space:nowrap;background:#171e2c;border:1px solid var(--line);padding:10px 14px;border-radius:11px}.tab.active{background:var(--purple);border-color:var(--purple)}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 18px}.muted{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{background:#f0f2f5;color:#151923;border-radius:15px;overflow:hidden;border:1px solid #303847}
+.cover{height:150px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#24206b,#101725)}
+.cover:before{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:#8b79ff66;filter:blur(12px);right:-20px;top:-40px}
+.coverIcon{position:relative;font-size:58px;filter:drop-shadow(0 8px 12px #0008)}
+.work{position:absolute;top:9px;right:9px;background:var(--green);color:#06150f;padding:5px 8px;border-radius:6px;font-size:9px;font-weight:950}
+.coverGame{position:absolute;left:10px;bottom:9px;color:#fff;text-shadow:0 2px 6px #000;font-size:10px;font-weight:850}
+.body{padding:12px}.type{font-size:10px;color:#6d7788;font-weight:850;text-transform:uppercase}.title{font-size:17px;font-weight:900;margin:5px 0}.desc{color:#697487;font-size:11px;line-height:1.45;min-height:32px}.stats{display:flex;gap:12px;color:#697487;font-size:10px;margin:10px 0}.actions{display:flex;gap:7px}.actions button{flex:1;padding:9px 5px;border-radius:9px;font-size:11px}.view{background:#20283a}.copy{background:var(--purple)}.delete{background:#a83b4a}
+.empty{grid-column:1/-1;text-align:center;padding:45px 10px;color:var(--muted)}
+.notice{margin:16px 0;padding:12px 14px;border:1px solid var(--line);background:#101724;border-radius:12px;color:#aeb9cb;font-size:12px;line-height:1.5}
+.modal{position:fixed;inset:0;background:#000b;z-index:100;display:none;align-items:center;justify-content:center;padding:16px}.modal.on{display:flex}
+.box{width:min(650px,100%);max-height:92vh;overflow:auto;background:#111722;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 20px 60px #0008}
+.head{display:flex;justify-content:space-between;align-items:center}.x{width:40px;height:40px;border-radius:11px;background:#20283a}
+.field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:850;margin-bottom:6px;color:#cbd3e2}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:#0c111b;color:#fff;border-radius:11px;padding:12px;outline:0}.field textarea{height:190px;resize:vertical;font-family:monospace}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.modalActions{display:flex;gap:8px}.modalActions button{flex:1}
+.toast{position:fixed;z-index:200;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;background:#171e2c;border:1px solid #3a465e;padding:12px 16px;border-radius:12px;transition:.2s;font-size:13px;pointer-events:none}.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:650px){.grid{gap:9px}.cover{height:110px}.coverIcon{font-size:43px}.title{font-size:14px}.desc{font-size:10px}.stats{font-size:9px}.actions button{font-size:10px;padding:8px 3px}.row{grid-template-columns:1fr}.wrap{padding:18px 10px 60px}.nav{padding:11px 10px}.nav .btn{padding:10px 11px;font-size:12px}}
+</style>
+</head>
+<body>
+<header class="top">
+<div class="nav">
+<div class="logo">DIW<b>SC</b></div>
+<button class="btn" id="openPublish">＋ Publish Script</button>
+</div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+<span class="pill">PUBLIC SCRIPT HUB</span>
+<h1>Temukan Script Roblox<br><span>untuk Project Kamu.</span></h1>
+<p>Katalog script dengan tampilan sederhana. Buat kategori sendiri untuk setiap game dan publish script project milikmu.</p>
+
+<div class="search">
+<input id="search" placeholder="Cari script atau nama game...">
+<button id="searchBtn">⌕</button>
+</div>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="toolbar">
+<span class="muted" id="count">0 script</span>
+<button class="btn dark" id="customBtn">⚙ Custom Menu</button>
+</div>
+</section>
+
+<div class="notice">ℹ️ Versi ini adalah web demo lokal. Data yang kamu publish tersimpan di browser perangkat ini.</div>
+<section class="grid" id="grid"></section>
+</main>
+
+<!-- Publish -->
+<div class="modal" id="publishModal">
+<div class="box">
+<div class="head"><h2>Publish Script</h2><button class="x" id="closePublish">✕</button></div>
+<p class="muted">Posting yang kamu publish bisa dihapus lagi kalau salah upload.</p>
+<div class="field"><label>Nama Script</label><input id="pTitle" placeholder="Contoh: Vehicle System"></div>
+<div class="row">
+<div class="field"><label>Nama Game</label><input id="pGame" placeholder="Contoh: Racing City"></div>
+<div class="field"><label>Author</label><input id="pAuthor" placeholder="Nama kamu"></div>
+</div>
+<div class="field"><label>Menu / Kategori</label><select id="pCat"></select></div>
+<div class="field"><label>Deskripsi</label><input id="pDesc" placeholder="Fungsi script..."></div>
+<div class="field"><label>Gambar Game / Gambaran Script</label>
+<input id="pImage" type="file" accept="image/*" style="padding:10px">
+<div id="imagePreview" style="display:none;margin-top:8px;border:1px solid var(--line);border-radius:11px;overflow:hidden">
+<img id="previewImg" style="display:block;width:100%;max-height:220px;object-fit:cover">
+</div>
+</div>
+<div class="field"><label>Script Lua</label><textarea id="pCode" placeholder="Tempel script project kamu di sini..."></textarea></div>
+<div class="modalActions"><button class="btn dark" id="cancelPublish">Batal</button><button class="btn" id="doPublish">🌐 Publish Public</button></div>
+</div>
+</div>
+
+<!-- Custom menu -->
+<div class="modal" id="menuModal">
+<div class="box">
+<div class="head"><h2>Custom Menu</h2><button class="x" id="closeMenu">✕</button></div>
+<p class="muted">Buat kategori sesuai game kamu, misalnya Vehicle, Pet, Farm, Quest, Weapon, Teleport, dan lainnya.</p>
+<div class="field"><label>Nama Menu Baru</label><input id="newMenu" placeholder="Contoh: Vehicle"></div>
+<div id="menuList" style="display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 16px"></div>
+<div class="modalActions"><button class="btn dark" id="doneMenu">Selesai</button><button class="btn" id="addMenu">＋ Tambah Menu</button></div>
+</div>
+</div>
+
+<!-- View script -->
+<div class="modal" id="codeModal">
+<div class="box">
+<div class="head"><h2 id="codeTitle">Script</h2><button class="x" id="closeCode">✕</button></div>
+<textarea id="codeText" style="width:100%;height:280px;background:#0c111b;color:#fff;border:1px solid var(--line);border-radius:11px;padding:12px;font-family:monospace"></textarea>
+<div class="modalActions" style="margin-top:10px"><button class="btn" id="copyFromView">📋 Salin Script</button></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+const KEY_POSTS="diwsc_new_posts_v1";
+const KEY_MENUS="diwsc_new_menus_v1";
+const defaults=[
+ {title:"Modern Admin Panel",game:"Racing City",author:"DiwSc",cat:"Admin",desc:"Contoh panel admin untuk game sendiri.",code:`local Players = game:GetService("Players")
+
+Players.PlayerAdded:Connect(function(player)
+    print("Welcome "..player.Name)
+end`,views:1280,likes:14},
+ {title:"Clean UI Starter",game:"Dance Party",author:"DiwSc",cat:"UI",desc:"Starter UI sederhana untuk project sendiri.",code:`local button = script.Parent
+
+button.Activated:Connect(function()
+    print("Button clicked")
+end`,views:842,likes:8},
+ {title:"Coin Pickup System",game:"Adventure World",author:"DiwSc",cat:"Gameplay",desc:"Contoh sistem pickup coin.",code:`local coin = script.Parent
+
+coin.Touched:Connect(function(hit)
+    local player = game.Players:GetPlayerFromCharacter(hit.Parent)
+    if player then
+        print(player.Name.." picked a coin")
+    end
+end`,views:2340,likes:31},
+ {title:"Simple Map Setup",game:"City Simulator",author:"DiwSc",cat:"Map",desc:"Contoh setup SpawnLocation.",code:`local spawn = workspace:WaitForChild("SpawnLocation")
+spawn.Enabled = true
+spawn.Neutral = true`,views:615,likes:6}
+];
+
+let posts=read(KEY_POSTS,[]);
+let menus=read(KEY_MENUS,["UI","Admin","Gameplay","Map"]);
+let active="All";
+let publicOnly=false;
+let selectedCode="";
+
+function read(key,fallback){
+ try{const x=localStorage.getItem(key);const y=x?JSON.parse(x):fallback;return Array.isArray(y)?y:fallback}catch(e){return fallback}
+}
+function save(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){return false}}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function all(){return [...posts,...defaults]}
+function toast(msg){
+ const t=document.getElementById("toast");t.textContent=msg;t.classList.add("on");
+ clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove("on"),1800);
+}
+function setModal(id,on){document.getElementById(id).classList.toggle("on",on)}
+function categories(){return ["All",...menus]}
+
+function renderTabs(){
+ const tabs=document.getElementById("tabs");
+ tabs.innerHTML=categories().map(c=>`<button class="tab ${active===c&&!publicOnly?"active":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("")
+ + `<button class="tab ${publicOnly?"active":""}" data-public="1">🌐 Public</button>`;
+ tabs.querySelectorAll("[data-cat]").forEach(b=>b.addEventListener("click",()=>{active=b.dataset.cat;publicOnly=false;renderTabs();render()}));
+ tabs.querySelector("[data-public]").addEventListener("click",()=>{publicOnly=true;active="All";renderTabs();render()});
+
+ const select=document.getElementById("pCat");
+ select.innerHTML=menus.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join("");
+ renderMenuList();
+}
+function renderMenuList(){
+ document.getElementById("menuList").innerHTML=menus.map((m,i)=>`<span style="background:#20283a;border:1px solid var(--line);padding:6px 8px;border-radius:9px;font-size:11px">${esc(m)} <button type="button" data-remove="${i}" style="background:none;padding:0 3px;color:#ff8796">✕</button></span>`).join("");
+ document.querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{
+   if(menus.length===1){toast("Minimal satu menu");return}
+   menus.splice(Number(b.dataset.remove),1);save(KEY_MENUS,menus);if(!menus.includes(active))active="All";renderTabs();render();
+ }));
+}
+function filtered(){
+ const q=document.getElementById("search").value.trim().toLowerCase();
+ return all().filter(x=>(!publicOnly||x.public===true)&&(active==="All"||x.cat===active)&&[x.title,x.game,x.author,x.cat,x.desc].join(" ").toLowerCase().includes(q));
+}
+function icon(x){return x.cat==="Vehicle"?"🚗":x.cat==="Pet"?"🐾":x.cat==="Map"?"🗺️":x.cat==="Gameplay"?"⚡":x.cat==="Admin"?"🛡️":"🎮"}
+function render(){
+ const list=filtered();document.getElementById("count").textContent=list.length+" script"+(list.length===1?"":"s");
+ const grid=document.getElementById("grid");
+ if(!list.length){grid.innerHTML='<div class="empty">Belum ada script di sini.</div>';return}
+ grid.innerHTML=list.map((x,i)=>`
+ <article class="card">
+  <div class="cover">${x.image?`<img src="${esc(x.image)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`:''}<div class="coverIcon" style="${x.image?'opacity:.0':''}">${icon(x)}</div><span class="work">WORKING</span><span class="coverGame">${esc(x.game)} • ${esc(x.author)}</span></div>
+  <div class="body">
+   <div class="type">${esc(x.cat)} • ROBLOX LUA</div>
+   <div class="title">${esc(x.title)}</div>
+   <div class="desc">${esc(x.desc)}</div>
+   <div class="stats"><span>◉ ${(x.views||0).toLocaleString()}</span><span>♡ ${x.likes||0}</span>${x.public?'<span>🌐 Public</span>':''}</div>
+   <div class="actions">
+<button class="view" data-view="${i}">View</button>
+<button class="copy" data-copy="${i}">📋 Copy</button>
+${x.public?'<button class="delete" data-delete="'+i+'">🗑 Hapus</button>':''}
+</div>
+  </div>
+ </article>`).join("");
+ grid.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>copyScript(filtered()[Number(b.dataset.copy)])));
+ grid.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>viewScript(filtered()[Number(b.dataset.view)])));
+ grid.querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",()=>deleteScript(filtered()[Number(b.dataset.delete)])));
+}
+async function copyScript(x){
+ if(!x)return;
+ const text=x.code||"";
+ try{
+   if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(text)}
+   else{
+     const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.focus();ta.select();
+     if(!document.execCommand("copy"))throw new Error("copy");
+     ta.remove();
+   }
+   toast("✓ Script berhasil disalin!");
+ }catch(e){
+   selectedCode=text;document.getElementById("codeTitle").textContent="Salin: "+x.title;document.getElementById("codeText").value=text;setModal("codeModal",true);
+   setTimeout(()=>document.getElementById("codeText").select(),50);
+ }
+}
+function viewScript(x){
+ if(!x)return;
+ selectedCode=x.code||"";
+ x.views=(x.views||0)+1;
+ const ix=posts.findIndex(p=>p.id&&p.id===x.id);if(ix>=0){posts[ix].views=x.views;save(KEY_POSTS,posts)}
+ document.getElementById("codeTitle").textContent=x.title;document.getElementById("codeText").value=selectedCode;setModal("codeModal",true);
+}
+function deleteScript(x){
+ if(!x || !x.id){toast("Script demo bawaan tidak bisa dihapus");return}
+ const ok=confirm('Hapus "'+x.title+'" dari Public?');
+ if(!ok)return;
+ const before=posts.length;
+ posts=posts.filter(p=>p.id!==x.id);
+ save(KEY_POSTS,posts);
+ renderTabs();
+ render();
+ toast(before!==posts.length?"✓ Script berhasil dihapus":"Script tidak ditemukan");
+}
+function publish(){
+ const x={
+  id:"DW-"+Date.now().toString(36).toUpperCase(),
+  title:document.getElementById("pTitle").value.trim(),
+  game:document.getElementById("pGame").value.trim(),
+  author:document.getElementById("pAuthor").value.trim()||"Anonymous",
+  cat:document.getElementById("pCat").value,
+  desc:document.getElementById("pDesc").value.trim()||"Script Roblox untuk project sendiri.",
+  image:window.publishImageData||"",
+  code:document.getElementById("pCode").value,
+  views:0,likes:0,public:true
+ };
+ if(!x.title||!x.game||!x.code){toast("Isi nama, game, dan script dulu");return}
+ posts.unshift(x);save(KEY_POSTS,posts);
+ ["pTitle","pGame","pAuthor","pDesc","pCode"].forEach(id=>document.getElementById(id).value="");
+ document.getElementById("pImage").value="";
+ document.getElementById("imagePreview").style.display="none";
+ document.getElementById("previewImg").removeAttribute("src");
+ window.publishImageData="";
+ setModal("publishModal",false);publicOnly=true;active="All";renderTabs();render();toast("✓ Berhasil dipublish Public!");
+}
+
+document.getElementById("openPublish").addEventListener("click",()=>setModal("publishModal",true));
+document.getElementById("closePublish").addEventListener("click",()=>setModal("publishModal",false));
+document.getElementById("cancelPublish").addEventListener("click",()=>setModal("publishModal",false));
+document.getElementById("doPublish").addEventListener("click",publish);
+
+document.getElementById("customBtn").addEventListener("click",()=>{renderMenuList();setModal("menuModal",true)});
+document.getElementById("closeMenu").addEventListener("click",()=>setModal("menuModal",false));
+document.getElementById("doneMenu").addEventListener("click",()=>setModal("menuModal",false));
+document.getElementById("addMenu").addEventListener("click",()=>{
+ const input=document.getElementById("newMenu"),name=input.value.trim();
+ if(!name){toast("Tulis nama menu dulu");input.focus();return}
+ if(menus.some(m=>m.toLowerCase()===name.toLowerCase())){toast("Menu sudah ada");return}
+ menus.push(name);save(KEY_MENUS,menus);input.value="";active=name;publicOnly=false;renderTabs();render();toast("✓ Menu "+name+" ditambahkan");
+});
+document.getElementById("newMenu").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("addMenu").click()}});
+
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("searchBtn").addEventListener("click",render);
+document.getElementById("closeCode").addEventListener("click",()=>setModal("codeModal",false));
+document.getElementById("copyFromView").addEventListener("click",async()=>{await copyScript({code:selectedCode});});
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("on")}));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal").forEach(m=>m.classList.remove("on"))});
+
+window.publishImageData="";
+document.getElementById("pImage").addEventListener("change",e=>{
+ const file=e.target.files&&e.target.files[0];
+ if(!file){window.publishImageData="";document.getElementById("imagePreview").style.display="none";return}
+ if(file.size>2.5*1024*1024){toast("Gambar maksimal 2.5 MB");e.target.value="";return}
+ const reader=new FileReader();
+ reader.onload=()=>{
+   window.publishImageData=reader.result;
+   document.getElementById("previewImg").src=reader.result;
+   document.getElementById("imagePreview").style.display="block";
+ };
+ reader.readAsDataURL(file);
+});
+
+renderTabs();render();
+</script>
+</body>
+</html>
