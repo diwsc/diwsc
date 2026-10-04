@@ -1,246 +1,151 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090b12">
-<title>DiwSc 🎮 Script Hub</title>
-<style>
-*{box-sizing:border-box} :root{--bg:#090b12;--card:#111722;--card2:#171e2c;--line:#273144;--text:#f5f7fb;--muted:#9aa6b8;--purple:#7c5cff;--red:#d94b62}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-button,input,textarea,select{font:inherit} button{border:0;cursor:pointer;color:#fff;font-weight:800}
-.top{position:sticky;top:0;z-index:20;background:#090b12ee;border-bottom:1px solid var(--line)}
-.nav{max-width:1050px;margin:auto;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.logo{font-size:22px;font-weight:950}.logo b{color:var(--purple)}
-.btn{background:var(--purple);padding:11px 15px;border-radius:11px}.btn.dark{background:#273144}.btn.red{background:var(--red)}.btn.small{padding:8px 10px;border-radius:9px;font-size:12px}
-.wrap{max-width:1050px;margin:auto;padding:24px 16px 70px}.hero{padding:15px 0}.pill{display:inline-block;border:1px solid #40377a;background:#17132e;padding:6px 10px;border-radius:999px;font-size:12px}
-h1{font-size:clamp(32px,7vw,52px);line-height:1.02;margin:15px 0 10px}h1 span{color:#8d7aff}.hero p{color:var(--muted);line-height:1.5}
-.search input{width:100%;height:52px;border:1px solid var(--line);background:var(--card);color:#fff;border-radius:12px;padding:0 15px;outline:none;margin:8px 0 13px}
-.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:8px}.tab{white-space:nowrap;background:var(--card2);padding:9px 12px;border-radius:10px}.tab.active{background:var(--purple)}
-.toolbar{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);margin:8px 0 14px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.empty{grid-column:1/-1;text-align:center;padding:45px 10px;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
-.card{background:#f0f2f5;color:#151923;border-radius:15px;overflow:hidden}.cover{height:145px;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#30235d,#171e2c);overflow:hidden}.cover img{width:100%;height:100%;object-fit:cover}.coverIcon{font-size:54px}.coverGame{position:absolute;left:10px;bottom:9px;color:#fff;text-shadow:0 2px 6px #000;font-weight:900}.body{padding:12px}.type{font-size:10px;color:#6d7788;font-weight:850;text-transform:uppercase}.title{font-size:18px;font-weight:950;margin:5px 0}.desc{font-size:12px;color:#687184;min-height:32px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:16px;z-index:100}.modal.show{display:flex}.box{width:min(620px,100%);max-height:90vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}.head{display:flex;justify-content:space-between;align-items:center}.x{width:40px;height:40px;border-radius:10px;background:#273144}
-.field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:850;margin-bottom:6px;color:#cfd6e1}.field input,.field textarea,.field select{width:100%;background:#0d121b;border:1px solid var(--line);color:#fff;border-radius:10px;padding:11px;outline:none}.field textarea{min-height:170px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.modalActions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
-.adminPage{display:none}.adminPage.show{display:block}.adminOnly{display:none}.adminOnly.show{display:inline-block}.adminbar{background:#101522;border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.stat{background:#0d121b;border:1px solid var(--line);padding:10px 12px;border-radius:10px}.danger{color:#ff9aaa}
-.toast{position:fixed;z-index:200;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;background:#fff;color:#111;padding:11px 14px;border-radius:10px;font-weight:800;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
-.loginIcon{font-size:42px}.loginBox{text-align:center}.loginBox input{text-align:center}.notice{font-size:12px;color:var(--muted);line-height:1.5;background:#0d121b;border:1px solid var(--line);padding:10px;border-radius:10px}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.cover{height:120px}.adminbar{align-items:stretch;flex-direction:column}}
-</style>
-
-<!-- SDK FIREBASE UTAMA (VERSI COMPAT) -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
-<script>
-  // Hubungkan ke Database Cloud DiwSc-Hub Anda
-  const firebaseConfig = {
-    apiKey: "AIzaSyAe2H3zHruUzTOBLbxQi26...", 
-    authDomain: "diwsc-hub.firebaseapp.com",
-    databaseURL: "https://diwsc-hub-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "diwsc-hub",
-    storageBucket: "diwsc-hub.appspot.com",
-    messagingSenderId: "542283921564",
-    appId: "1:542283921564:web:e5e8e3d231bfa2377de4cc"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const databaseOnline = firebase.database();
-</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#090b12">
+    <title>DiwSc - Script Hub</title>
 </head>
 <body>
-<header class="top">
-<div class="nav">
-<div class="logo">DIW<b>SC</b></div>
-<div>
-<button class="btn dark small" id="adminBtn"> 🔐 Admin</button>
-<button class="btn adminOnly small" id="logoutBtn">Keluar</button>
-</div>
-</div>
-</header>
 
-<main class="wrap" id="publicPage">
-<section class="hero">
-<span class="pill">ROBLOX SCRIPT HUB</span>
-<h1>DiwSc <span>Script Hub</span></h1>
-<p>Katalog script DiwSc. Pengunjung hanya dapat melihat dan menyalin script. Penambahan dan penghapusan dikelola dari halaman Admin.</p>
-</section>
-<div class="search"><input id="search" placeholder="Cari script atau nama game..."></div>
-<div class="tabs" id="tabs"></div>
-<div class="toolbar"><span id="count">0 script</span></div>
-<section class="grid" id="grid"></section>
-</main>
+    <!-- ========================================== -->
+    <!-- 1. BAGIAN FORMULIR TAMBAH SCRIPT (HTML) -->
+    <!-- Cari modal admin Anda, lalu sesuaikan bagian inputnya menjadi seperti ini -->
+    <!-- ========================================== -->
+    <div class="field">
+        <label>Nama script</label>
+        <input id="fTitle" placeholder="Contoh: Blade Ball Hub">
+    </div>
+    
+    <div class="field">
+        <label>Nama game</label>
+        <input id="fGame" placeholder="Contoh: Roblox">
+    </div>
 
-<section class="wrap adminPage" id="adminPage">
-<div class="adminbar"><div><b>👑Admin DiwSc</b><div style="color:var(--muted);font-size:12px">Kelola script yang tampil di katalog.</div></div><div class="stat" id="adminCount">0 script</div></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px">
-<button class="btn" id="addBtn">+ Tambah Script</button>
-<button class="btn dark" id="adminHome">Lihat Katalog</button>
-</div>
-<div class="grid" id="adminGrid"></div>
-</section>
+    <div class="field">
+        <label>Kategori</label>
+        <select id="fCat">
+            <option value="Roblox">Roblox</option>
+            <option value="Simulator">Simulator</option>
+            <option value="Tycoon">Tycoon</option>
+            <option value="Roleplay">Roleplay</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
 
-<div class="modal" id="loginModal">
-<div class="box loginBox">
-<div class="loginIcon"> 🔐 </div><h2>Login Admin DiwSc</h2>
-<p style="color:var(--muted)">Masukkan password admin.</p>
-<div class="field"><input id="loginPass" type="password" placeholder="Password admin"></div>
-<button class="btn" id="loginGo" style="width:100%">Masuk</button>
-<p class="notice" style="margin-top:12px">Catatan: karena DiwSc memakai GitHub Pages tanpa server, login ini adalah proteksi antarmuka, bukan keamanan server. Untuk admin yang benar-benar hanya bisa digunakan oleh kamu, diperlukan backend/authentication.</p>
-</div></div>
+    <div class="field">
+        <label>Link script</label>
+        <input id="fLink" placeholder="https://...">
+    </div>
 
-<div class="modal" id="editModal">
-<div class="box">
-<div class="head"><h2 id="editHeading">Tambah Script</h2><button class="x" data-close>X
-</button></div>
-<div class="row">
-<div class="field"><label>Nama script</label><input id="fTitle" placeholder="Nama script"></div>
-<div class="field"><label>Nama game</label><input id="fGame" placeholder="Nama game"></div>
-</div>
-<div class="field"><label>Kategori</label><select id="fCat"><option>Roblox</option><option>Simulator</option><option>Tycoon</option><option>Roleplay</option><option>Other</option></select></div>
-<div class="field"><label>Link script</label><input id="fLink" placeholder="https://..."></div>
-<div class="field">
-<label>Link Gambar/Ikon</label>
-<input id="fImg" placeholder="https://...">
-</div>
+    <!-- PENTING: SEBARIS KODE BARU UNTUK INPUT GALERI DI BARIS 103 -->
+    <div class="field">
+        <label>Gambar Ikon Script (Unggah dari Galeri)</label>
+        <input type="file" id="fFile" accept="image/*" style="padding:5px;background:#222;border:1px solid #444;border-radius:6px;width:100%;color:#fff;">
+        <input type="hidden" id="fImg">
+        <div id="uploadStatus" style="color:#aaa;font-size:12px;margin-top:5px;"></div>
+    </div>
 
-<div class="field"><label>Isi script</label><textarea id="fCode" placeholder="Tempel script..."></textarea></div>
-<div class="modalActions"><button class="btn dark" data-close>Batal</button><button class="btn" id="saveScript">Simpan</button></div>
-</div></div>
-
-<div class="modal" id="viewModal"><div class="box"><div class="head"><h2 id="vTitle"></h2><button class="x" data-close>X</button></div><p id="vGame"></p><pre id="vCode" style="white-space:pre-wrap;background:#090b12;padding:12px;border-radius:10px;overflow:auto"></pre><div class="modalActions"><button class="btn" id="copyView">Copy Script</button></div></div></div>
-<div class="toast" id="toast"></div>
-
-<script>
-const SESSION="diwsc_admin_session";
-const ADMIN_PASSWORD="RiandikaM.P";
-let scripts=[];
-let category="Semua", editId=null, current=null;
-
-const $=id=>document.getElementById(id);
-function esc(s=""){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"'"}[m]));}
-function toast(s){$("toast").textContent=s;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1800)}
-function show(id){$(id).classList.add("show")} function closeAll(){document.querySelectorAll(".modal").forEach(x=>x.classList.remove("show"))}
-document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeAll);
-
-databaseOnline.ref('scripts/').on('value', (snapshot) => {
-  const data = snapshot.val();
-  scripts = [];
-  if(data) {
-    Object.keys(data).forEach((key) => {
-      scripts.push({ id: key, ...data[key] });
-    });
-  }
-  render();
-  renderAdmin();
-});
-
-function renderTabs(){
- const cats=["Semua",...new Set(scripts.map(x=>x.cat).filter(Boolean))];
- $("tabs").innerHTML=cats.map(c=>`<button class="tab ${c===category?"active":""}" onclick="setCat('${esc(c)}')">${esc(c)}</button>`).join("");
-}
-window.setCat=c=>{category=c;render()};
-
-function card(x,admin=false){
-  let btn = '<button class="btn small primary" ';
-  btn += `onclick="viewScript('${x.id}')">Lihat</button>`;
-  if(admin){
-    btn += `<button class="btn small" `;
-    btn += `onclick="editScript('${x.id}')">Edit</button>`;
-    btn += `<button class="btn small danger" `;
-    btn += `onclick="deleteScript('${x.id}')">Hapus</button>`;
-  }
-  let im = x.img || 'https://placeholder.com';
-  let html = `<article class="card">`;
-  html += `<div class="cover" style="height:120px;`;
-  html += `overflow:hidden;background:#000;display:flex;`;
-  html += `align-items:center;justify-content:center;">`;
-  html += `<img src="${im}" alt="${esc(x.title)}" `;
-  html += `style="width:100%;height:100%;object-fit:cover;">`;
-  html += `</div>`;
-  html += `<div class="body">`;
-  html += `<div class="type">${esc(x.cat)}</div>`;
-  html += `<h2>${esc(x.title)}</h2>`;
-  html += `<p>${esc(x.game)}</p>`;
-  html += `</div>`;
-  html += `<div class="actions">${btn}</div>`;
-  html += `</article>`;
-  return html;
-}
+    <textarea id="fCode" placeholder="Tempel script..."></textarea>
 
 
-function render(){
- renderTabs();
- const q=$("search").value.toLowerCase().trim();
- const list=scripts.filter(x=>(category==="Semua"||x.cat===category)&&((x.title+" "+x.game+" "+x.cat).toLowerCase().includes(q)));
- $("count").textContent=list.length+" script";
- $("grid").innerHTML=list.length?list.map(x=>card(x,false)).join(""):`<div class="empty"><h3>Belum ada script</h3><p>Script akan ditambahkan.</p></div>`;
-}
-
-function renderAdmin(){
- $("adminCount").textContent=scripts.length+" script";
- $("adminGrid").innerHTML=scripts.length?scripts.map(x=>card(x,true)).join(""):`<div class="empty"><h3>Katalog kosong</h3><p>Tekan â€œTambah Scriptâ€ untuk mulai.</p></div>`;
-}
-
-window.view=id=>{const x=scripts.find(s=>s.id===id);if(!x)return;current=x;$("vTitle").textContent=x.title;$("vGame").textContent="Game: "+x.game;$("vCode").textContent=x.code||x.link||"Tidak ada isi script.";show("viewModal")};
-window.copyScript=async id=>{const x=scripts.find(s=>s.id===id);if(!x)return;const text=x.code||x.link||"";try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);toast("Script disalin");return}}catch(e){}try{const ta=document.createElement("textarea");ta.value=text;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.left="-9999px";ta.style.top="0";document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,ta.value.length);const ok=document.execCommand("copy");ta.remove();if(ok){toast("Script disalin");return}}catch(e){}try{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();toast("Tekan Salin");}catch(e){toast("Gagal menyalin")}};
-
-window.deleteScript=id=>{
- if(!isAdmin())return;
- if(confirm("Hapus script permanen?")){
-   databaseOnline.ref('scripts/' + id).remove().then(() => toast("Script dihapus")).catch(() => toast("Gagal"));
- }
-};
-
-window.editScript=id=>{
- if(!isAdmin())return;
- const x=scripts.find(s=>s.id===id);if(!x)return;editId=id;
- $("editHeading").textContent="Edit Script";$("fTitle").value=x.title;$("fGame").value=x.game;$("fCat").value=x.cat;$("fLink").value=x.link||"";$("fCode").value=x.code||"";show("editModal");
-};
-$("copyView").onclick=()=>{if(current)copyScript(current.id)};
-
-function isAdmin(){return sessionStorage.getItem(SESSION)==="1"}
-function setAdminUI(){
- const a=isAdmin();$("adminBtn").style.display=a?"none":"inline-block";document.querySelectorAll(".adminOnly").forEach(x=>x.classList.toggle("show",a));
- if(a){$("publicPage").style.display="none";$("adminPage").classList.add("show");renderAdmin()}else{$("publicPage").style.display="block";$("adminPage").classList.remove("show");render()}
-}
-$("adminBtn").onclick=()=>{if(isAdmin())setAdminUI();else{$("loginPass").value="";show("loginModal")}};
-$("loginGo").onclick=()=>{
- if($("loginPass").value===ADMIN_PASSWORD){sessionStorage.setItem(SESSION,"1");closeAll();setAdminUI();toast("Login berhasil")}
- else toast("Password salah")
-};
-$("logoutBtn").onclick=()=>{sessionStorage.removeItem(SESSION);setAdminUI();toast("Logout berhasil")};
-$("adminHome").onclick=()=>{sessionStorage.removeItem(SESSION);setAdminUI()};
-$("addBtn").onclick=()=>{editId=null;$("editHeading").textContent="Tambah Script";["fTitle","fGame","fLink","fCode"].forEach(id=>$(id).value="");$("fCat").value="Roblox";show("editModal")};
-
-$("#saveScript").onclick=()=>{
-  if(!isAdmin())return;
-  const title=$("#fTitle").value.trim();
-  const game=$("#fGame").value.trim();
-  const cat=$("#fCat").value;
-  const code=$("#fCode").value.trim();
-  const img=$("#fImg").value.trim();
-  if(!title||!game||!code){
-    toast("Wajib diisi semua!");
-    return;
-  }
-  const data={
-    title,game,cat,code,
-    img:img||"https://placeholder.com"
-  };
-  if(editId){
-    databaseOnline.ref('scripts/'+editId).update(data);
-  }else{
-    databaseOnline.ref('scripts/').push(data);
-  }
-  $("#fImg").value="";
-  closeModal();
-};
+    <script>
+    // ==========================================
+    // 2. LOGIKA UNGGAH GALERI OTOMATIS (JAVASCRIPT)
+    // Pasang fungsi ini tepat di atas $("#saveScript").onclick
+    // ==========================================
+    $("#fFile").onchange = function() {
+      const file = this.files[0];
+      if (!file) return;
+      
+      const status = $("#uploadStatus");
+      status.innerText = "Mengunggah gambar... Mohon tunggu.";
+      
+      const formData = new FormData();
+      formData.append("image", file);
+      
+      fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: { Authorization: "Client-ID 6634796695bdf5e" },
+        body: formData
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          $("#fImg").value = res.data.link; // Link imgur otomatis tersimpan di fImg
+          status.innerHTML = "<span style='color:#4caf50;'>Gambar dari galeri berhasil dipasang!</span>";
+        } else {
+          status.innerHTML = "<span style='color:#f44336;'>Gagal mengunggah gambar.</span>";
+        }
+      })
+      .catch(() => {
+        status.innerHTML = "<span style='color:#f44336;'>Eror koneksi ke server gambar.</span>";
+      });
+    };
 
 
-$("search").oninput=render;
-setAdminUI();
-</script>
+    // ==========================================
+    // 3. FUNGSI TAMPILAN KARTU / CARD (JAVASCRIPT)
+    // Ganti fungsi card(x, admin) lama Anda dengan versi di bawah ini
+    // ==========================================
+    function card(x,admin=false){
+      let btn = '<button class="btn small primary" ';
+      btn += `onclick="viewScript('${x.id}')">Lihat</button>`;
+      if(admin){
+        btn += `<button class="btn small" `;
+        btn += `onclick="editScript('${x.id}')">Edit</button>`;
+        btn += `<button class="btn small danger" `;
+        btn += `onclick="deleteScript('${x.id}')">Hapus</button>`;
+      }
+      let im = x.img || 'https://via.placeholder.com/150';
+      let html = `<article class="card">`;
+      html += `<div class="cover" style="height:120px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;">`;
+      html += `<img src="${im}" alt="${esc(x.title)}" style="width:100%;height:100%;object-fit:cover;">`;
+      html += `</div>`;
+      html += `<div class="body">`;
+      html += `<div class="type">${esc(x.cat)}</div>`;
+      html += `<h2>${esc(x.title)}</h2>`;
+      html += `<p>${esc(x.game)}</p>`;
+      html += `</div>`;
+      html += `<div class="actions">${btn}</div>`;
+      html += `</article>`;
+      return html;
+    }
+
+
+    // ==========================================
+    // 4. LOGIKA TOMBOL SIMPAN SCRIPT (JAVASCRIPT)
+    // Ganti fungsi $("#saveScript").onclick lama Anda dengan ini
+    // ==========================================
+    $("#saveScript").onclick=()=>{
+      if(!isAdmin())return;
+      const title=$("#fTitle").value.trim();
+      const game=$("#fGame").value.trim();
+      const cat=$("#fCat").value;
+      const code=$("#fCode").value.trim();
+      const img=$("#fImg").value.trim();
+      
+      if(!title||!game||!code){
+        toast("Nama script, game, dan isi script wajib diisi semua!");
+        return;
+      }
+      
+      const data={
+        title,game,cat,code,
+        img:img||"https://via.placeholder.com/150"
+      };
+      
+      if(editId){
+        databaseOnline.ref('scripts/'+editId).update(data);
+      }else{
+        databaseOnline.ref('scripts/').push(data);
+      }
+      
+      $("#fImg").value="";
+      $("#fFile").value=""; // Reset pilihan file galeri agar bersih kembali
+      closeModal();
+    };
+    </script>
+
 </body>
- </html>
+</html>
