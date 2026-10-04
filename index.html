@@ -100,6 +100,11 @@ h1{font-size:clamp(32px,7vw,52px);line-height:1.02;margin:15px 0 10px}h1 span{co
 </div>
 <div class="field"><label>Kategori</label><select id="fCat"><option>Roblox</option><option>Simulator</option><option>Tycoon</option><option>Roleplay</option><option>Other</option></select></div>
 <div class="field"><label>Link script</label><input id="fLink" placeholder="https://..."></div>
+<div class="field">
+<label>Link Gambar/Ikon</label>
+<input id="fImg" placeholder="https://...">
+</div>
+
 <div class="field"><label>Isi script</label><textarea id="fCode" placeholder="Tempel script..."></textarea></div>
 <div class="modalActions"><button class="btn dark" data-close>Batal</button><button class="btn" id="saveScript">Simpan</button></div>
 </div></div>
@@ -138,12 +143,32 @@ function renderTabs(){
 window.setCat=c=>{category=c;render()};
 
 function card(x,admin=false){
- return `<article class="card">
- <div class="cover"><div class="coverIcon">ðŸŽ®</div><div class="coverGame">${esc(x.game)}</div></div>
- <div class="body"><div class="type">${esc(x.cat)}</div><div class="title">${esc(x.title)}</div><div class="desc">${esc(x.link||"Script tersimpan di DiwSc")}</div>
- <div class="actions"><button class="btn small" onclick="view('${x.id}')">Lihat</button><button class="btn dark small" onclick="copyScript('${x.id}')">Copy</button>
- ${admin?`<button class="btn small" onclick="editScript('${x.id}')">✏️ Edit</button><button class="btn red small" onclick="deleteScript('${x.id}')">🗑️ Hapus</button>`:""}</div></div></article>`;
+  let btn = '<button class="btn small primary" ';
+  btn += `onclick="viewScript('${x.id}')">Lihat</button>`;
+  if(admin){
+    btn += `<button class="btn small" `;
+    btn += `onclick="editScript('${x.id}')">Edit</button>`;
+    btn += `<button class="btn small danger" `;
+    btn += `onclick="deleteScript('${x.id}')">Hapus</button>`;
+  }
+  let im = x.img || 'https://placeholder.com';
+  let html = `<article class="card">`;
+  html += `<div class="cover" style="height:120px;`;
+  html += `overflow:hidden;background:#000;display:flex;`;
+  html += `align-items:center;justify-content:center;">`;
+  html += `<img src="${im}" alt="${esc(x.title)}" `;
+  html += `style="width:100%;height:100%;object-fit:cover;">`;
+  html += `</div>`;
+  html += `<div class="body">`;
+  html += `<div class="type">${esc(x.cat)}</div>`;
+  html += `<h2>${esc(x.title)}</h2>`;
+  html += `<p>${esc(x.game)}</p>`;
+  html += `</div>`;
+  html += `<div class="actions">${btn}</div>`;
+  html += `</article>`;
+  return html;
 }
+
 
 function render(){
  renderTabs();
@@ -189,17 +214,30 @@ $("logoutBtn").onclick=()=>{sessionStorage.removeItem(SESSION);setAdminUI();toas
 $("adminHome").onclick=()=>{sessionStorage.removeItem(SESSION);setAdminUI()};
 $("addBtn").onclick=()=>{editId=null;$("editHeading").textContent="Tambah Script";["fTitle","fGame","fLink","fCode"].forEach(id=>$(id).value="");$("fCat").value="Roblox";show("editModal")};
 
-$("saveScript").onclick=()=>{
- if(!isAdmin())return;
- const title=$("fTitle").value.trim(),game=$("fGame").value.trim();
- if(!title||!game){toast("Nama script dan game wajib diisi");return}
- const data={title,game,cat:$("fCat").value,link:$("fLink").value.trim(),code:$("fCode").value};
- if(editId){
-   databaseOnline.ref('scripts/' + editId).update(data).then(() => { toast("Script diperbarui"); closeAll(); }).catch(() => toast("Gagal"));
- }else{
-   databaseOnline.ref('scripts/').push({ ...data, created: Date.now() }).then(() => { toast("Script ditambahkan"); closeAll(); }).catch(() => toast("Gagal"));
- }
+$("#saveScript").onclick=()=>{
+  if(!isAdmin())return;
+  const title=$("#fTitle").value.trim();
+  const game=$("#fGame").value.trim();
+  const cat=$("#fCat").value;
+  const code=$("#fCode").value.trim();
+  const img=$("#fImg").value.trim();
+  if(!title||!game||!code){
+    toast("Wajib diisi semua!");
+    return;
+  }
+  const data={
+    title,game,cat,code,
+    img:img||"https://placeholder.com"
+  };
+  if(editId){
+    databaseOnline.ref('scripts/'+editId).update(data);
+  }else{
+    databaseOnline.ref('scripts/').push(data);
+  }
+  $("#fImg").value="";
+  closeAll();
 };
+
 $("search").oninput=render;
 setAdminUI();
 </script>
