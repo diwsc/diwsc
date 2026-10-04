@@ -142,7 +142,7 @@ function card(x,admin=false){
  <div class="cover"><div class="coverIcon">ðŸŽ®</div><div class="coverGame">${esc(x.game)}</div></div>
  <div class="body"><div class="type">${esc(x.cat)}</div><div class="title">${esc(x.title)}</div><div class="desc">${esc(x.link||"Script tersimpan di DiwSc")}</div>
  <div class="actions"><button class="btn small" onclick="view('${x.id}')">Lihat</button><button class="btn dark small" onclick="copyScript('${x.id}')">Copy</button>
- ${admin?`<button class="btn small" onclick="editScript('${x.id}')">âœï¸ Edit</button><button class="btn red small" onclick="deleteScript('${x.id}')">ðŸ—‘ Hapus</button>`:""}</div></div></article>`;
+ ${admin?`<button class="btn small" onclick="editScript('${x.id}')">✏️ Edit</button><button class="btn red small" onclick="deleteScript('${x.id}')">🗑️ Hapus</button>`:""}</div></div></article>`;
 }
 
 function render(){
