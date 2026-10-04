@@ -235,8 +235,9 @@ $("#saveScript").onclick=()=>{
     databaseOnline.ref('scripts/').push(data);
   }
   $("#fImg").value="";
-  closeAll();
+  closeModal();
 };
+
 
 $("search").oninput=render;
 setAdminUI();
