@@ -19,7 +19,8 @@ h1{font-size:clamp(32px,7vw,52px);line-height:1.02;margin:15px 0 10px}h1 span{co
 .tabs{display:flex;gap:8px;overflow:auto;padding-bottom:8px}.tab{white-space:nowrap;background:var(--card2);padding:9px 12px;border-radius:10px}.tab.active{background:var(--purple)}
 .toolbar{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);margin:8px 0 14px}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.empty{grid-column:1/-1;text-align:center;padding:45px 10px;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
-.card{background:#f0f2f5;color:#151923;border-radius:15px;overflow:hidden}.cover{height:145px;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#30235d,#171e2c);overflow:hidden}.cover img{width:100%;height:100%;object-fit:cover}.coverIcon{font-size:54px}.coverGame{position:absolute;left:10px;bottom:9px;color:#fff;text-shadow:0 2px 6px #000;font-weight:900}.body{padding:12px}.type{font-size:10px;color:#6d7788;font-weight:850;text-transform:uppercase}.title{font-size:18px;font-weight:950;margin:5px 0}.desc{font-size:12px;color:#687184;min-height:32px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.card{background:#f0f2f5;color:#151923;border-radius:15px;overflow:hidden}.cover{height:145px;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#30235d,#171e2c);overflow:hidden}.cover img{width:100%;height:100%;object-fit:cover;display:block}.coverIcon{font-size:54px}
+.coverGame{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent, rgba(0,0,0,0.8));padding:20px 10px 9px;color:#fff;font-weight:900}.body{padding:12px}.type{font-size:10px;color:#6d7788;font-weight:850;text-transform:uppercase}.title{font-size:18px;font-weight:950;margin:5px 0}.desc{font-size:12px;color:#687184;min-height:32px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:16px;z-index:100}.modal.show{display:flex}.box{width:min(620px,100%);max-height:90vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}.head{display:flex;justify-content:space-between;align-items:center}.x{width:40px;height:40px;border-radius:10px;background:#273144}
 .field{margin:12px 0}.field label{display:block;font-size:12px;font-weight:850;margin-bottom:6px;color:#cfd6e1}.field input,.field textarea,.field select{width:100%;background:#0d121b;border:1px solid var(--line);color:#fff;border-radius:10px;padding:11px;outline:none}.field textarea{min-height:170px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.modalActions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 .adminPage{display:none}.adminPage.show{display:block}.adminOnly{display:none}.adminOnly.show{display:inline-block}.adminbar{background:#101522;border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -34,7 +35,6 @@ h1{font-size:clamp(32px,7vw,52px);line-height:1.02;margin:15px 0 10px}h1 span{co
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
 <script>
-  // Hubungkan ke Database Cloud DiwSc-Hub Anda
   const firebaseConfig = {
     apiKey: "AIzaSyAe2H3zHruUzTOBLbxQi26...", 
     authDomain: "diwsc-hub.firebaseapp.com",
@@ -173,17 +173,27 @@ window.deleteScript=id=>{
 
 $("fImage").onchange = function(e) {
   const file = e.target.files;
-  if (file) {
-    if(file.size > 1024 * 1024) { 
-      toast("Ukuran gambar terlalu besar! Gunakan gambar di bawah 1MB.");
-      $("fImage").value = "";
-      return;
-    }
+  if (file && file[0]) {
+    toast("Memproses gambar...");
     const reader = new FileReader();
     reader.onload = function(event) {
-      base64ImageString = event.target.result;
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 400; 
+        const scaleSize = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scaleSize;
+        
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        base64ImageString = canvas.toDataURL("image/jpeg", 0.7);
+        toast("Gambar siap disimpan!");
+      };
+      img.src = event.target.result;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file[0]);
   }
 };
 
